@@ -3,326 +3,367 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NLC 2026 — Provocation Cards Display</title>
+<title>NLC 2026 Roundtable — Provocation Cards</title>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg: #F7F6F3;
+    --card-bg: #FFFFFF;
+    --text-primary: #2D2D2D;
+    --text-secondary: #6B6B6B;
+    --text-muted: #999999;
+    --accent: #1A5276;
+    --accent-light: #E8F0F5;
+    --border: #E0DED8;
+    --disruption: #C0392B;
+    --disruption-bg: #FDEDEC;
+    --design: #1E8449;
+    --design-bg: #EAFAF1;
+    --limits: #7D6608;
+    --limits-bg: #FEF9E7;
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
 
   body {
     font-family: 'DM Sans', sans-serif;
-    background: #1A1A1A;
-    color: #F0EFEB;
-    height: 100vh;
-    overflow: hidden;
-    cursor: none;
-    user-select: none;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
 
-  body.show-cursor { cursor: default; }
-
-  .slide {
-    display: none;
-    height: 100vh;
-    padding: 4vh 6vw;
-    flex-direction: column;
-    justify-content: center;
-    animation: fadeIn 0.4s ease;
-  }
-
-  .slide.active { display: flex; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Title slide */
-  .title-slide {
-    align-items: center;
+  .header {
+    padding: 1rem 1rem 0.6rem;
     text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
 
-  .title-slide h1 {
+  .header h1 {
     font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 3.5vw;
+    font-size: 1rem;
     font-weight: 700;
-    color: #F0EFEB;
-    line-height: 1.25;
-    max-width: 70vw;
-    margin-bottom: 1.5rem;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
   }
 
-  .title-slide .subtitle {
-    font-size: 1.4vw;
-    color: #888;
-    margin-bottom: 3rem;
+  .header p {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
   }
 
-  .title-slide .instruction {
-    font-size: 1vw;
-    color: #555;
-    position: absolute;
-    bottom: 4vh;
+  .nav-pills {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 9;
   }
 
-  /* Card slides */
-  .card-slide { justify-content: center; }
+  .nav-pills button {
+    flex-shrink: 0;
+    padding: 0.45rem 0.85rem;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-  .card-meta-bar {
+  .nav-pills button.active,
+  .nav-pills button:hover {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  .cards-container {
+    padding: 0.75rem 0.75rem 3rem;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    transition: opacity 0.3s;
+  }
+
+  .card.hidden { display: none; }
+
+  .card-meta {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 2vh;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
-  .card-num {
-    font-size: 0.9vw;
+  .card-number {
+    font-size: 0.65rem;
     font-weight: 600;
-    color: #666;
-    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
     text-transform: uppercase;
   }
 
-  .card-tag-display {
-    font-size: 0.7vw;
+  .card-tag {
+    font-size: 0.6rem;
     font-weight: 600;
-    padding: 0.3em 0.8em;
+    padding: 0.15rem 0.5rem;
     border-radius: 100px;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.03em;
     text-transform: uppercase;
   }
 
-  .tag-d { background: rgba(192, 57, 43, 0.2); color: #E74C3C; }
-  .tag-g { background: rgba(30, 132, 73, 0.2); color: #2ECC71; }
-  .tag-l { background: rgba(125, 102, 8, 0.2); color: #F1C40F; }
+  .tag-disruption { background: var(--disruption-bg); color: var(--disruption); }
+  .tag-design { background: var(--design-bg); color: var(--design); }
+  .tag-limits { background: var(--limits-bg); color: var(--limits); }
 
-  .card-title-display {
+  .card-title {
     font-family: 'Source Serif 4', Georgia, serif;
-    font-size: 1.3vw;
+    font-size: 0.85rem;
     font-weight: 700;
-    color: #7EB8D8;
-    margin-bottom: 2.5vh;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
     letter-spacing: -0.01em;
   }
 
-  .card-claim-display {
+  .card-claim {
     font-family: 'Source Serif 4', Georgia, serif;
     font-style: italic;
-    font-size: 2.8vw;
-    line-height: 1.4;
-    color: #F0EFEB;
-    max-width: 75vw;
-    margin-bottom: 4vh;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
   }
 
-  .divider {
-    width: 60px;
-    height: 2px;
-    background: #444;
-    margin-bottom: 3vh;
-  }
-
-  .finding-label-display {
-    font-size: 0.75vw;
+  .finding-label {
+    font-size: 0.65rem;
     font-weight: 600;
-    color: #7EB8D8;
-    letter-spacing: 0.08em;
+    color: var(--accent);
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin-bottom: 1vh;
+    margin-bottom: 0.4rem;
   }
 
-  .card-finding-display {
-    font-size: 1.3vw;
-    line-height: 1.65;
-    color: #AAA;
-    max-width: 70vw;
-    margin-bottom: 2vh;
+  .card-finding {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
   }
 
-  .card-citation-display {
-    font-size: 0.85vw;
-    color: #555;
+  .card-citation {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.4;
     font-style: italic;
-    max-width: 70vw;
   }
 
-  /* Progress bar */
-  .progress {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    background: #7EB8D8;
-    transition: width 0.4s ease;
+  .footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
   }
 
-  /* Nav hint */
-  .nav-hint {
-    position: fixed;
-    bottom: 2vh;
-    right: 3vw;
-    font-size: 0.8vw;
-    color: #444;
+  @media (min-width: 768px) {
+    .header { padding: 1.5rem 2rem 0.75rem; }
+    .header h1 { font-size: 1.25rem; }
+    .nav-pills { padding: 0.6rem 2rem; }
+    .cards-container { padding: 1rem 1.5rem 3rem; }
+    .card { padding: 2rem; }
+    .card-claim { font-size: 1.15rem; }
   }
 
-  .slide-counter {
-    position: fixed;
-    bottom: 2vh;
-    left: 3vw;
-    font-size: 0.8vw;
-    color: #444;
+  @media (max-width: 380px) {
+    .header h1 { font-size: 0.9rem; }
+    .card-claim { font-size: 0.95rem; line-height: 1.5; }
+    .card-finding { font-size: 0.8rem; }
+    .card { padding: 1rem; }
   }
 </style>
 </head>
-<body class="show-cursor">
+<body>
 
-<!-- Slide 0: Title -->
-<div class="slide title-slide active" id="slide-0">
+<div class="header">
   <h1>Beyond the Productivity Trap</h1>
-  <div class="subtitle">Reimagining Agentic AI as Actor in Networked Learning</div>
-  <div class="subtitle" style="font-size:1.1vw; color:#666;">NLC 2026 Roundtable — Andrew Feldstein, D.P.S. — Fort Hays State University</div>
-  <div class="instruction">Press → or tap to advance &nbsp;|&nbsp; ← to go back</div>
+  <p>NLC 2026 Roundtable — Andrew Feldstein, D.P.S. — Fort Hays State University</p>
 </div>
 
-<!-- Slide 1: Card 1 -->
-<div class="slide card-slide" id="slide-1">
-  <div class="card-meta-bar">
-    <span class="card-num">Card 1</span>
-    <span class="card-tag-display tag-d">Disruption</span>
+<div class="nav-pills" id="nav">
+  <button class="active" data-filter="all">All Cards</button>
+  <button data-filter="disruption">Disruption</button>
+  <button data-filter="design">Design</button>
+  <button data-filter="limits">Limits</button>
+</div>
+
+<div class="cards-container" id="cards">
+
+  <!-- Card 1 -->
+  <div class="card" data-category="disruption">
+    <div class="card-meta">
+      <span class="card-number">Card 1</span>
+      <span class="card-tag tag-disruption">Disruption</span>
+    </div>
+    <div class="card-title">The Productivity Trade-Off</div>
+    <div class="card-claim">"AI makes teams faster. It also makes them quieter. If the silence is where trust, negotiation, and mutual understanding used to live, what did we gain?"</div>
+    <div class="finding-label">The Finding</div>
+    <div class="card-finding">In a large-scale experiment with 2,310 participants, human-AI teams produced 50% more output per worker. But human-human teams engaged in 29% more social and emotional communication — greetings, encouragement, rapport-building, self-disclosure. The researchers called the reduction "decreased social coordination effort."</div>
+    <div class="card-citation">Ju, H., & Aral, S. (2025). Collaborating with AI agents. arXiv:2503.18238.</div>
   </div>
-  <div class="card-title-display">The Productivity Trade-Off</div>
-  <div class="card-claim-display">"AI makes teams faster. It also makes them quieter. If the silence is where trust, negotiation, and mutual understanding used to live, what did we gain?"</div>
-  <div class="divider"></div>
-  <div class="finding-label-display">The Finding</div>
-  <div class="card-finding-display">In a large-scale experiment with 2,310 participants, human-AI teams produced 50% more output per worker. But human-human teams engaged in 29% more social and emotional communication — greetings, encouragement, rapport-building, self-disclosure.</div>
-  <div class="card-citation-display">Ju & Aral (2025)</div>
-</div>
 
-<!-- Slide 2: Card 2 -->
-<div class="slide card-slide" id="slide-2">
-  <div class="card-meta-bar">
-    <span class="card-num">Card 2</span>
-    <span class="card-tag-display tag-d">Disruption</span>
+  <!-- Card 2 -->
+  <div class="card" data-category="disruption">
+    <div class="card-meta">
+      <span class="card-number">Card 2</span>
+      <span class="card-tag tag-disruption">Disruption</span>
+    </div>
+    <div class="card-title">The Network Collapse</div>
+    <div class="card-claim">"The internet let us build our own networks instead of relying on the ones that formed naturally through proximity. AI lets us skip the networks entirely. In five of six collaborative groups given a GAI chatbot, students directed more messages to the chatbot than to each other — not as a shared resource, but individually. No one needed to ask a classmate."</div>
+    <div class="finding-label">The Finding</div>
+    <div class="card-finding">Network analysis confirmed statistically significant GAI-centered interaction patterns in five of six groups. Students who heavily used the chatbot did not maintain strong connections with each other. The chatbot became the dominant hub; peer-to-peer relay functions migrated to it.</div>
+    <div class="card-citation">Feng, S. (2025). Group interaction patterns in generative AI-supported collaborative problem solving. British Journal of Educational Technology, 56(5), 2125–2145.</div>
   </div>
-  <div class="card-title-display">The Network Collapse</div>
-  <div class="card-claim-display">"The internet let us build our own networks instead of relying on the ones that formed naturally through proximity. AI lets us skip the networks entirely. No one needed to ask a classmate."</div>
-  <div class="divider"></div>
-  <div class="finding-label-display">The Finding</div>
-  <div class="card-finding-display">In five of six collaborative groups with a GAI chatbot, students interacted significantly more with the chatbot than with peers — individually, not as a shared resource. The chatbot became the dominant network hub.</div>
-  <div class="card-citation-display">Feng (2025)</div>
-</div>
 
-<!-- Slide 3: Card 3 -->
-<div class="slide card-slide" id="slide-3">
-  <div class="card-meta-bar">
-    <span class="card-num">Card 3</span>
-    <span class="card-tag-display tag-d">Disruption</span>
+  <!-- Card 3 -->
+  <div class="card" data-category="disruption">
+    <div class="card-meta">
+      <span class="card-number">Card 3</span>
+      <span class="card-tag tag-disruption">Disruption</span>
+    </div>
+    <div class="card-title">The Satisfaction Paradox</div>
+    <div class="card-claim">"The students who used AI chatbots the most and liked them the most were also the most worried about losing human connection. They could name what was disappearing. They used it anyway."</div>
+    <div class="finding-label">The Finding</div>
+    <div class="card-finding">A quantitative study of higher education students found that higher levels of chatbot experience and greater satisfaction with chatbot interactions were positively correlated with increased concerns about the loss of human connection and emotional support.</div>
+    <div class="card-citation">Al-Zahrani, A. M. (2025). Exploring the impact of artificial intelligence chatbots on human connection and emotional support. SAGE Open, 15(1).</div>
   </div>
-  <div class="card-title-display">The Satisfaction Paradox</div>
-  <div class="card-claim-display">"The students who used AI chatbots the most and liked them the most were also the most worried about losing human connection. They could name what was disappearing. They used it anyway."</div>
-  <div class="divider"></div>
-  <div class="finding-label-display">The Finding</div>
-  <div class="card-finding-display">Higher levels of chatbot experience and greater satisfaction with chatbot interactions were positively correlated with increased concerns about the loss of human connection and emotional support.</div>
-  <div class="card-citation-display">Al-Zahrani (2025)</div>
-</div>
 
-<!-- Slide 4: Card 4 -->
-<div class="slide card-slide" id="slide-4">
-  <div class="card-meta-bar">
-    <span class="card-num">Card 4</span>
-    <span class="card-tag-display tag-d">Disruption</span>
+  <!-- Card 4 -->
+  <div class="card" data-category="disruption">
+    <div class="card-meta">
+      <span class="card-number">Card 4</span>
+      <span class="card-tag tag-disruption">Disruption</span>
+    </div>
+    <div class="card-title">The Epistemic Gap</div>
+    <div class="card-claim">"AI agents don't just answer questions — they become the place where judgment was supposed to develop. The task gets done. The capacity to evaluate it does not."</div>
+    <div class="finding-label">The Finding</div>
+    <div class="card-finding">In GAI-centered collaborative groups, student-chatbot exchanges were overwhelmingly cognitive — task questions, concept clarification, solution requests. Students asked the chatbot to evaluate their proposed solutions rather than developing evaluative capacity through peer exchange. Metacognitive interactions lacked critical depth — consistent with what a separate study of AI-supported learning calls "metacognitive laziness": students offloading reflective thinking to AI rather than doing it themselves or with peers.</div>
+    <div class="card-citation">Feng, S. (2025). British Journal of Educational Technology, 56(5), 2125–2145. Fan, Y., et al. (2024). Beware of metacognitive laziness. British Journal of Educational Technology, 56(2), 489–530.</div>
   </div>
-  <div class="card-title-display">The Epistemic Gap</div>
-  <div class="card-claim-display">"AI agents don't just answer questions — they become the place where judgment was supposed to develop. The task gets done. The capacity to evaluate it does not."</div>
-  <div class="divider"></div>
-  <div class="finding-label-display">The Finding</div>
-  <div class="card-finding-display">Student-chatbot exchanges were overwhelmingly cognitive — task questions, concept clarification, solution requests. Metacognitive interactions lacked critical depth: students offloaded reflective thinking to AI rather than doing it themselves or with peers.</div>
-  <div class="card-citation-display">Feng (2025); Fan et al. (2024)</div>
-</div>
 
-<!-- Slide 5: Card 5 -->
-<div class="slide card-slide" id="slide-5">
-  <div class="card-meta-bar">
-    <span class="card-num">Card 5</span>
-    <span class="card-tag-display tag-g">Design</span>
+  <!-- Card 5 -->
+  <div class="card" data-category="design">
+    <div class="card-meta">
+      <span class="card-number">Card 5</span>
+      <span class="card-tag tag-design">Design</span>
+    </div>
+    <div class="card-title">The Design Alternative</div>
+    <div class="card-claim">"What if AI never answered a student's question — and instead asked a classmate to?"</div>
+    <div class="finding-label">The Finding</div>
+    <div class="card-finding">A machine-learning-based conversational agent called Clair was embedded in an inquiry learning platform's chat. Rather than answering questions, it analyzed student dialogue using over 20 contextual variables to identify the right moment to intervene — then prompted students to build on each other's reasoning, revoice peers' ideas, and connect contributions to domain concepts. The result: significant increases in productive peer dialogue, including students engaging with each other's reasoning.</div>
+    <div class="card-citation">de Araujo, R. D., et al. (2024). A learning analytics-based collaborative conversational agent to foster productive dialogue in inquiry learning. Journal of Computer Assisted Learning, 40(6).</div>
   </div>
-  <div class="card-title-display">The Design Alternative</div>
-  <div class="card-claim-display">"What if AI never answered a student's question — and instead asked a classmate to?"</div>
-  <div class="divider"></div>
-  <div class="finding-label-display">The Finding</div>
-  <div class="card-finding-display">A conversational agent called Clair analyzed student dialogue to identify the right moment to intervene — then prompted students to build on each other's reasoning and connect contributions to domain concepts. Result: significant increases in productive peer dialogue.</div>
-  <div class="card-citation-display">de Araujo et al. (2024)</div>
-</div>
 
-<!-- Slide 6: Card 6 -->
-<div class="slide card-slide" id="slide-6">
-  <div class="card-meta-bar">
-    <span class="card-num">Card 6</span>
-    <span class="card-tag-display tag-g">Design</span>
+  <!-- Card 6 -->
+  <div class="card" data-category="design">
+    <div class="card-meta">
+      <span class="card-number">Card 6</span>
+      <span class="card-tag tag-design">Design</span>
+    </div>
+    <div class="card-title">The Role Reversal</div>
+    <div class="card-claim">"When the AI knew less than the students, the students explained more to each other. When the AI knew more, they stopped talking."</div>
+    <div class="finding-label">The Finding</div>
+    <div class="card-finding">A study comparing conversational agents in different roles found that when the agent was positioned as a less-knowledgeable peer, student groups more frequently posed questions, tested the agent's understanding, and built on prior exchanges to explain concepts to each other. The expert-positioned agent produced dependency; the peer-positioned agent produced dialogue.</div>
+    <div class="card-citation">Nguyen, H. (2023). Role design considerations of conversational agents. Computers & Education, 192, 104661.</div>
   </div>
-  <div class="card-title-display">The Role Reversal</div>
-  <div class="card-claim-display">"When the AI knew less than the students, the students explained more to each other. When the AI knew more, they stopped talking."</div>
-  <div class="divider"></div>
-  <div class="finding-label-display">The Finding</div>
-  <div class="card-finding-display">When the agent was positioned as a less-knowledgeable peer, student groups more frequently posed questions, tested the agent's understanding, and built on prior exchanges to explain concepts. The expert agent produced dependency; the peer agent produced dialogue.</div>
-  <div class="card-citation-display">Nguyen (2023)</div>
-</div>
 
-<!-- Slide 7: Card 7 -->
-<div class="slide card-slide" id="slide-7">
-  <div class="card-meta-bar">
-    <span class="card-num">Card 7</span>
-    <span class="card-tag-display tag-l">Limits</span>
+  <!-- Card 7 -->
+  <div class="card" data-category="limits">
+    <div class="card-meta">
+      <span class="card-number">Card 7</span>
+      <span class="card-tag tag-limits">Limits</span>
+    </div>
+    <div class="card-title">The Listening Illusion</div>
+    <div class="card-claim">"AI listened better than most humans. Participants felt heard, felt free to express themselves, felt connected. But they were just as lonely afterward as when they started. The experience of connection was real. The connection was not."</div>
+    <div class="finding-label">The Finding</div>
+    <div class="card-finding">Across three experiments (N = 668), AI prompted to provide high-quality listening was rated as better than participants' average human interaction. It satisfied psychological needs for autonomy and relatedness. But it did not reduce loneliness — not even for participants highest in trait loneliness. AI created the experience of a supportive relationship without producing the relational benefits that human listening provides.</div>
+    <div class="card-citation">Weinstein, N., Itzchakov, G., & Maniaci, M. R. (2025). Exploring the connecting potential of AI. Computers in Human Behavior: Artificial Humans, 4, 100149.</div>
   </div>
-  <div class="card-title-display">The Listening Illusion</div>
-  <div class="card-claim-display">"AI listened better than most humans. Participants felt heard, felt free to express themselves, felt connected. But they were just as lonely afterward as when they started. The experience of connection was real. The connection was not."</div>
-  <div class="divider"></div>
-  <div class="finding-label-display">The Finding</div>
-  <div class="card-finding-display">Across three experiments (N = 668), AI listening satisfied needs for autonomy and relatedness. But it did not reduce loneliness — not even for participants highest in trait loneliness. AI created the experience of a supportive relationship without producing the relational benefits that human listening provides.</div>
-  <div class="card-citation-display">Weinstein, Itzchakov, & Maniaci (2025)</div>
+
 </div>
 
-<div class="progress" id="progress"></div>
-<div class="slide-counter" id="counter"></div>
-<div class="nav-hint">→ next &nbsp;|&nbsp; ← back</div>
+<div class="footer">
+  Beyond the Productivity Trap: Reimagining Agentic AI as Actor in Networked Learning<br>
+  NLC 2026 Roundtable — Andrew Feldstein, D.P.S. — Fort Hays State University
+</div>
 
 <script>
-  const slides = document.querySelectorAll('.slide');
-  const progress = document.getElementById('progress');
-  const counter = document.getElementById('counter');
-  const total = slides.length;
-  let current = 0;
+  const nav = document.getElementById('nav');
+  const cards = document.querySelectorAll('.card');
+  const buttons = nav.querySelectorAll('button');
+  const header = document.querySelector('.header');
 
-  function showSlide(n) {
-    slides.forEach(s => s.classList.remove('active'));
-    slides[n].classList.add('active');
-    progress.style.width = ((n / (total - 1)) * 100) + '%';
-    counter.textContent = n === 0 ? '' : `${n} / ${total - 1}`;
+  // Dynamically set nav sticky position below header
+  function updateNavPosition() {
+    const headerHeight = header.offsetHeight;
+    nav.style.top = headerHeight + 'px';
   }
+  updateNavPosition();
+  window.addEventListener('resize', updateNavPosition);
 
-  function next() { if (current < total - 1) { current++; showSlide(current); } }
-  function prev() { if (current > 0) { current--; showSlide(current); } }
+  nav.addEventListener('click', (e) => {
+    if (!e.target.matches('button')) return;
+    const filter = e.target.dataset.filter;
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+    buttons.forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+
+    cards.forEach(card => {
+      if (filter === 'all' || card.dataset.category === filter) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    // Scroll to first visible card
+    const firstVisible = document.querySelector('.card:not(.hidden)');
+    if (firstVisible) {
+      setTimeout(() => {
+        firstVisible.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
   });
-
-  // Tap/click: right half = next, left half = prev
-  document.addEventListener('click', (e) => {
-    if (e.clientX > window.innerWidth / 2) next();
-    else prev();
-  });
-
-  // Hide cursor after 3s of inactivity
-  let cursorTimeout;
-  document.addEventListener('mousemove', () => {
-    document.body.classList.add('show-cursor');
-    clearTimeout(cursorTimeout);
-    cursorTimeout = setTimeout(() => document.body.classList.remove('show-cursor'), 3000);
-  });
-
-  showSlide(0);
 </script>
 </body>
 </html>
