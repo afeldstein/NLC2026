@@ -8,12 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ========================================
-   COLOR SYSTEM — WCAG 2.1 AA
-   All text colors verified >= 4.5:1 contrast
-   against their respective backgrounds.
-   Large text (>=18px or >=14px bold) >= 3:1.
-   ======================================== */
 :root {
   --bg: #FAFAF7;
   --text: #2C2C2A;
@@ -35,6 +29,7 @@
   --purple-900: #26215C;
   --annotation: #5B539E;
   --sidebar: #4A4291;
+  --return: #7A5F1A;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -53,11 +48,10 @@
     --purple-stroke: #7F77DD;
     --annotation: #B5B0EA;
     --sidebar: #AFA9EC;
+    --return: #D4B45A;
   }
 }
-
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
 body {
   font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   background: var(--bg);
@@ -65,8 +59,6 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
-
-/* Skip link */
 .skip-link {
   position: absolute;
   top: -100px;
@@ -81,22 +73,18 @@ body {
   text-decoration: none;
 }
 .skip-link:focus { top: 16px; }
-
 *:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
 }
-
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
-
 .page {
   max-width: 740px;
   margin: 0 auto;
   padding: 56px 24px 72px;
 }
-
 header { text-align: center; margin-bottom: 40px; }
 .institution {
   font-size: 11px;
@@ -114,11 +102,8 @@ header h1 {
   margin-bottom: 4px;
 }
 header .sub { font-size: 14px; color: var(--muted); }
-
 .viz { margin: 0 auto; max-width: 680px; }
 .viz svg { width: 100%; display: block; }
-
-/* Light mode SVG fills */
 .t-primary { fill: var(--text); }
 .t-muted { fill: var(--muted); }
 .t-teal { fill: var(--teal-800); }
@@ -127,6 +112,7 @@ header .sub { font-size: 14px; color: var(--muted); }
 .t-purple-sub { fill: var(--purple-600); }
 .t-annotation { fill: var(--annotation); }
 .t-sidebar { fill: var(--sidebar); }
+.t-return { fill: var(--return); }
 .r-teal { fill: var(--teal-50); stroke: var(--teal-600); }
 .r-teal-strong { fill: var(--teal-50); stroke: var(--teal-400); }
 .r-purple { fill: var(--purple-50); stroke: var(--purple-600); }
@@ -134,7 +120,7 @@ header .sub { font-size: 14px; color: var(--muted); }
 .line-purple { stroke: var(--purple-600); }
 .line-purple-soft { stroke: var(--purple-400); }
 .line-border { stroke: var(--border); }
-
+.line-return { stroke: var(--return); }
 @media (prefers-color-scheme: dark) {
   .t-teal { fill: var(--teal-text); }
   .t-teal-sub { fill: var(--teal-text); }
@@ -142,14 +128,15 @@ header .sub { font-size: 14px; color: var(--muted); }
   .t-purple-sub { fill: var(--purple-text-sub); }
   .t-annotation { fill: var(--annotation); }
   .t-sidebar { fill: var(--sidebar); }
+  .t-return { fill: var(--return); }
   .r-teal { fill: var(--teal-bg); stroke: var(--teal-stroke); }
   .r-teal-strong { fill: var(--teal-bg); stroke: var(--teal-stroke); }
   .r-purple { fill: var(--purple-bg); stroke: var(--purple-stroke); }
   .line-teal { stroke: var(--teal-stroke); }
   .line-purple { stroke: var(--purple-stroke); }
   .line-purple-soft { stroke: var(--purple-400); }
+  .line-return { stroke: var(--return); }
 }
-
 .narrative {
   max-width: 560px;
   margin: 40px auto 0;
@@ -158,7 +145,6 @@ header .sub { font-size: 14px; color: var(--muted); }
   line-height: 1.75;
   text-align: center;
 }
-
 footer {
   text-align: center;
   margin-top: 48px;
@@ -174,7 +160,6 @@ footer em {
   display: block;
   margin-bottom: 6px;
 }
-
 .sr-only {
   position: absolute;
   width: 1px; height: 1px;
@@ -184,7 +169,6 @@ footer em {
   white-space: nowrap;
   border: 0;
 }
-
 @media (max-width: 480px) {
   .page { padding: 32px 16px 48px; }
 }
@@ -203,7 +187,6 @@ footer em {
 
   <main id="main">
 
-    <!-- Full structured text alternative for assistive technology -->
     <div class="sr-only" id="viz-full-desc">
       <h2>Digital Master Plan: Teaching and Learning Ecosystem</h2>
       <p>North star: Supporting human connection in digital spaces, because meaningful learning happens through relationships.</p>
@@ -217,6 +200,7 @@ footer em {
         <li>Programs lead change: where faculty shape this work around what their discipline demands. Evidence test: Are programs using data to inform redesign? Are faculty leading this within their disciplines?</li>
       </ol>
       <p>Two sustaining conditions run through every layer: trust and transparency in decisions and data, and purposeful tools where connection comes first and the tool comes second.</p>
+      <p>This is an iterative process, not a linear one. What we learn at each layer reshapes what we build. Evidence flows back up through the system and informs the next cycle of investment, design, and practice.</p>
       <p>AI is reshaping every layer of this ecosystem. In courses and programs it affects analytics, feedback, and curriculum, requiring faculty judgment. In student learning it affects writing, research, and problem-solving, requiring student agency. We are building this expertise together through shared inquiry, not mandates.</p>
       <p>All of this flows back to the learner: what students are able to think, do, and become.</p>
     </div>
@@ -230,6 +214,9 @@ footer em {
           </marker>
           <marker id="ap" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M2 1.5L7.5 5L2 8.5" fill="none" stroke="#534AB7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="ar" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M8 1.5L2.5 5L8 8.5" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </marker>
         </defs>
 
@@ -271,6 +258,10 @@ footer em {
         <!-- RIGHT: PURPOSEFUL TOOLS -->
         <line x1="604" y1="260" x2="604" y2="670" stroke="#534AB7" stroke-width="1.5" opacity="0.18"/>
         <text class="t-sidebar" x="612" y="460" text-anchor="middle" transform="rotate(90 612 460)" font-family="'DM Sans', sans-serif" font-size="11" font-weight="500" letter-spacing="1">PURPOSEFUL TOOLS</text>
+
+        <!-- RETURN PATH — left margin -->
+        <path d="M140 674 L36 674 Q28 674 28 666 L28 252 Q28 244 36 244 L140 244" fill="none" class="line-return" stroke-width="0.8" opacity="0.4" marker-end="url(#ar)"/>
+        <text class="t-return" x="20" y="460" text-anchor="middle" transform="rotate(-90 20 460)" font-family="'DM Sans', sans-serif" font-size="9" font-style="italic" letter-spacing="0.3" opacity="0.55">What we learn reshapes what we build</text>
 
         <!-- 1. LASTING COMMITMENT -->
         <rect x="140" y="260" width="400" height="46" rx="4" class="r-purple" stroke-width="0.5"/>
@@ -339,7 +330,7 @@ footer em {
     </div>
 
     <p class="narrative">
-      Read top to bottom. Learning sits at the center because it is the purpose. Belonging, connection, and agency are the conditions learning requires. The teaching and learning ecosystem is what makes those conditions possible — a chain of dependencies where lasting commitment enables investment in teaching, which enables design for belonging, which enables student partnership, which converges in programs where faculty shape the work around what their discipline demands. Trust and purposeful tools sustain every layer. AI runs through the entire system, requiring faculty judgment in courses and programs, and student agency in learning. Everything flows back to the learner.
+      Read top to bottom. Learning sits at the center because it is the purpose. Belonging, connection, and agency are the conditions learning requires. The teaching and learning ecosystem is what makes those conditions possible — a chain of dependencies where lasting commitment enables investment in teaching, which enables design for belonging, which enables student partnership, which converges in programs where faculty shape the work around what their discipline demands. Trust and purposeful tools sustain every layer. The return path on the left makes visible what the evidence annotations imply: this is iterative. What we learn at each layer reshapes what we build in the next cycle. AI runs through the entire system, requiring faculty judgment in courses and programs, and student agency in learning. Everything flows back to the learner.
     </p>
 
   </main>
